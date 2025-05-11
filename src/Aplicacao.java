@@ -1,51 +1,77 @@
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Scanner;
 
 public class Aplicacao {
-    private static final Scanner scanner = new Scanner(System.in);
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
     public static void main(String[] args) {
-        ListaCorridas lista = new ListaCorridas("Corridas do Usuário");
-        popularCorridas(lista);
+        Scanner scanner = new Scanner(System.in);
+        int opcao;
+
         exibirLogo();
 
-        while (true) {
+        // Exibição inicial do menu
+        do {
             System.out.println("\n╔══════════════════════════════════╗");
-            System.out.println("║     CONTROLE DE CORRIDAS 🏃     ║");
+            System.out.println("║     CONTROLE DE CORRIDAS 🏃      ║");
             System.out.println("╠══════════════════════════════════╣");
             System.out.println("║ 1) Cadastrar nova corrida        ║");
-            System.out.println("║ 2) Listar por data               ║");
-            System.out.println("║ 3) Buscar por nome               ║");
-            System.out.println("║ 4) Listar por distância/nome     ║");
+            System.out.println("║ 2) Listar corridas por data      ║");
+            System.out.println("║ 3) Buscar corrida por nome       ║");
+            System.out.println("║ 4) Listar por distância          ║");
             System.out.println("║ 5) Listar por dificuldade        ║");
             System.out.println("║ 6) Resumo de desempenho          ║");
-            System.out.println("║ 7) Excluir corrida               ║");
+            System.out.println("║ 7) Excluir corrida existente     ║");
             System.out.println("║ 0) Sair                          ║");
             System.out.println("╚══════════════════════════════════╝");
-            System.out.print("Escolha uma opção: ");
-            int opcao = Integer.parseInt(scanner.nextLine());
+            System.out.println();
+            System.out.println("[34m🔹 Escolha uma opção:[0m");
+            System.out.print(">>> ");
 
-            switch (opcao) {
-                case 1 -> cadastrarCorrida(lista);
-                case 2 -> listar(lista.listarPorData());
-                case 3 -> buscarCorrida(lista);
-                case 4 -> listar(lista.listarPorDistanciaENome());
-                case 5 -> listar(lista.listarPorDificuldade());
-                case 6 -> mostrarResumo(lista);
-                case 7 -> excluirCorrida(lista);
-                case 0 -> {
-                    System.out.println("Saindo...");
-                    return;
-                }
-                default -> System.out.println("Opção inválida.");
+            String entrada = scanner.nextLine();
+            try {
+                opcao = Integer.parseInt(entrada);
+            } catch (NumberFormatException e) {
+                opcao = -1; // valor inválido para forçar aviso
+            } // consumir o ENTER
+
+            if (opcao == 1) {
+                exibirSeparador();
+                System.out.println("[34m🔹 Cadastrar corrida:[0m");
+                System.out.print(">>> ");
+                scanner.nextLine(); // simulação de entrada
+            } else if (opcao == 2) {
+                exibirSeparador();
+                System.out.println("[34m🔹 Listar corridas por data:[0m");
+            } else if (opcao == 3) {
+                exibirSeparador();
+                System.out.println("[34m🔹 Buscar corrida por nome:[0m");
+            } else if (opcao == 4) {
+                exibirSeparador();
+                System.out.println("[34m🔹 Listar corridas por distância:[0m");
+            } else if (opcao == 5) {
+                exibirSeparador();
+                System.out.println("[34m🔹 Listar corridas por dificuldade:[0m");
+            } else if (opcao == 6) {
+                exibirSeparador();
+                System.out.println("[34m🔹 Mostrar resumo de desempenho:[0m");
+            } else if (opcao == 7) {
+                exibirSeparador();
+                System.out.println("[34m🔹 Excluir corrida existente:[0m");
+                System.out.print(">>> ");
+                scanner.nextLine(); // simulação de entrada
+            } else if (opcao == 0) {
+                exibirSeparador();
+                System.out.println("[33m🔸 Encerrando o programa...[0m");
+                System.out.println();
+            } else {
+                System.out.println();
+                System.out.println("[33m🔸 Opção inválida. Tente novamente.[0m");
+                System.out.println();
             }
-        }
+        } while (opcao != 0);
+
+        scanner.close();
     }
 
-    private static void exibirLogo() {
+    public static void exibirLogo() {
         System.out.println("           _________ _______  _______  _______  _        _______  _______ ");
         System.out.println("|\\     /|  \\__   __/(  ____ )(  ___  )(  ____ \\| \\    /\\(  ____ \\(  ____ )");
         System.out.println("( \\   / )     ) (   | (    )|| (   ) || (    \\/|  \\  / /| (    \\/| (    )|");
@@ -55,121 +81,7 @@ public class Aplicacao {
         System.out.println("( /   \\ )     | |   | ) \\ \\__| )   ( || (____/\\|  /  \\ \\| (____/\\| ) \\ \\__");
         System.out.println("|/     \\|     )_(   |/   \\__/|/     \\|(_______/|_/    \\/(_______/|/   \\__/");
     }
-
-    private static void cadastrarCorrida(ListaCorridas lista) {
-        System.out.println(">> Nova corrida");
-        System.out.print("Digite o nome da corrida: ");
-        String nome = scanner.nextLine();
-
-        Corrida corrida = new Corrida(nome);
-
-        try {
-            System.out.print("Digite a data da corrida (dd/MM/yyyy): ");
-            String dataStr = scanner.nextLine();
-            if (!dataStr.isBlank()) {
-                LocalDate data = LocalDate.parse(dataStr, formatter);
-                corrida.setData(data);
-            }
-        } catch (Exception e) {
-            System.out.println("Data inválida, ignorada.");
-        }
-
-        System.out.print("Digite a distância percorrida (em metros): ");
-        String distStr = scanner.nextLine();
-        if (!distStr.isBlank()) corrida.setDistancia(Integer.parseInt(distStr));
-
-        System.out.print("Digite o tempo gasto (em minutos): ");
-        String tempoStr = scanner.nextLine();
-        if (!tempoStr.isBlank()) corrida.setTempo(Integer.parseInt(tempoStr));
-
-        System.out.print("Dificuldade percebida (1 a 10): ");
-        String difStr = scanner.nextLine();
-        if (!difStr.isBlank()) corrida.setDificuldade(Integer.parseInt(difStr));
-
-        lista.adicionarCorrida(corrida);
-        System.out.println("Corrida cadastrada com sucesso!");
+    public static void exibirSeparador() {
+        System.out.println("-..- - .-. .- -.-. -.- . .-.-..- - .-. .- -.-. -.- . .-.");
     }
-
-    private static void listar(List<Corrida> corridas) {
-        System.out.println(">> Lista de corridas");
-        for (Corrida c : corridas) {
-            System.out.println(c);
-        }
-    }
-
-    private static void buscarCorrida(ListaCorridas lista) {
-        System.out.print("Digite parte do nome da corrida a buscar: ");
-        String trecho = scanner.nextLine();
-        List<Corrida> resultados = lista.buscarPorNome(trecho);
-
-        if (resultados.isEmpty()) {
-            System.out.println("Nenhuma corrida encontrada.");
-        } else {
-            listar(resultados);
-        }
-    }
-
-    private static void mostrarResumo(ListaCorridas lista) {
-        System.out.println(">> Resumo de desempenho");
-        System.out.println("Número de corridas: " + lista.getNumeroCorridas());
-        System.out.println("Distância total percorrida: " + lista.getDistanciaTotal() + "m");
-        System.out.println("Tempo total gasto: " + lista.getTempoTotal() + " minutos");
-        System.out.printf("Tempo médio por corrida: %.2f minutos\n", lista.getTempoMedio());
-    }
-
-    private static void excluirCorrida(ListaCorridas lista) {
-        System.out.print("Digite parte do nome da corrida a excluir: ");
-        String trecho = scanner.nextLine();
-        List<Corrida> resultados = lista.buscarPorNome(trecho);
-        if (resultados.isEmpty()) {
-            System.out.println("Nenhuma corrida encontrada.");
-        } else if (resultados.size() == 1) {
-            System.out.println("Encontrei: " + resultados.get(0));
-            System.out.print("Deseja excluir <S/N>: ");
-            String confirmacao = scanner.nextLine();
-            if (confirmacao.equalsIgnoreCase("S")) {
-                lista.removerCorrida(resultados.get(0));
-                System.out.println("Corrida excluída com sucesso!");
-            } else {
-                System.out.println("Exclusão cancelada.");
-            }
-        } else {
-            System.out.println("Múltiplas corridas encontradas, refine sua busca.");
-            listar(resultados);
-        }
-    }
-
-    private static void popularCorridas(ListaCorridas lista) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-        Corrida c1 = new Corrida("Maratona UFPR 100 anos");
-        c1.setData(LocalDate.parse("24/09/1001", formatter));
-        c1.setDistancia(10000);
-        c1.setTempo(50);
-        c1.setDificuldade(10);
-
-        Corrida c2 = new Corrida("Corrida Parque Barigui Hoje de Manhã");
-        c2.setData(LocalDate.parse("10/05/2025", formatter));
-        c2.setDistancia(1000);
-        c2.setTempo(5);
-        c2.setDificuldade(2);
-
-        Corrida c3 = new Corrida("Desafio da Serra do Mar");
-        c3.setData(LocalDate.parse("15/08/2023", formatter));
-        c3.setDistancia(21000);
-        c3.setTempo(120);
-        c3.setDificuldade(9);
-
-        Corrida c4 = new Corrida("Corrida da Lua Cheia");
-        c4.setData(LocalDate.parse("27/03/2024", formatter));
-        c4.setDistancia(5000);
-        c4.setTempo(30);
-        c4.setDificuldade(5);
-
-        lista.adicionarCorrida(c1);
-        lista.adicionarCorrida(c2);
-        lista.adicionarCorrida(c3);
-        lista.adicionarCorrida(c4);
-    }
-
 }
