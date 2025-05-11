@@ -73,8 +73,12 @@ public class Corrida implements Comparable<Corrida>, Serializable {
     // Implementação de Comparable para ordenar por data
     @Override
     public int compareTo(Corrida outra) {
+        if (this.data == null && outra.data == null) return 0;
+        if (this.data == null) return 1; // ou -1 se quiser datas nulas primeiro
+        if (outra.data == null) return -1;
         return this.data.compareTo(outra.data);
     }
+
 
     // Método toString
     @Override

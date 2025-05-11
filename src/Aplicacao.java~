@@ -8,8 +8,8 @@ public class Aplicacao {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public static void main(String[] args) {
+        
         ListaCorridas lista = new ListaCorridas("Corridas do Usuário");
-        popularCorridas(lista);
         exibirLogo();
 
         while (true) {
