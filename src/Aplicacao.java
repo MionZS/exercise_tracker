@@ -47,7 +47,7 @@ public class Aplicacao {
     private static void exibirLogo() {
         System.out.println("           _________ _______  _______  _______  _        _______  _______ ");
         System.out.println("|\\     /|  \\__   __/(  ____ )(  ___  )(  ____ \\| \\    /\\(  ____ \\(  ____ )");
-        System.out.println("( \\   / )     ) (   | (    )|| (   ) || (    \/|  \\  / /| (    \/| (    )|");
+        System.out.println("( \\   / )     ) (   | (    )|| (   ) || (    \\/|  \\  / /| (    \\/| (    )|");
         System.out.println(" \\ (_) /      | |   | (____)|| (___) || |      |  (_/ / | (__    | (____)|");
         System.out.println("  ) _ (       | |   |     __)|  ___  || |      |   _ (  |  __)   |     __)");
         System.out.println(" / ( ) \\      | |   | (\\ (   | (   ) || |      |  ( \\ \\ | (      | (\\ (   ");

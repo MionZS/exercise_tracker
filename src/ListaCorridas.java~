@@ -3,7 +3,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ListaCorridas implements Iterable<Corrida> {
     private String nomeLista;
@@ -43,10 +42,8 @@ public class ListaCorridas implements Iterable<Corrida> {
                 .thenComparing(Corrida::getNome));
     }
 
-    public List<Corrida> listarPorDificuldade() {
-        return corridas.stream()
-                .sorted(Comparator.comparingInt(Corrida::getDificuldade).reversed())
-                .collect(Collectors.toList());
+    public void ordenarPorDificuldade() {
+        Collections.sort(corridas, Comparator.comparingInt(Corrida::getDificuldade).reversed());
     }
 
     public List<Corrida> buscarPorNome(String trecho) {
@@ -91,19 +88,6 @@ public class ListaCorridas implements Iterable<Corrida> {
     public double getTempoMedio() {
         if (corridas.isEmpty()) return 0;
         return (double) getTempoTotal() / corridas.size();
-    }
-
-    public List<Corrida> listarPorData() {
-        return corridas.stream()
-                .sorted()
-                .collect(Collectors.toList());
-    }
-
-    public List<Corrida> listarPorDistanciaENome() {
-        return corridas.stream()
-                .sorted(Comparator.comparingInt(Corrida::getDistancia).reversed()
-                        .thenComparing(Corrida::getNome))
-                .collect(Collectors.toList());
     }
 
     @Override
