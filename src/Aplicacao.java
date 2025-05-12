@@ -42,16 +42,27 @@ public class Aplicacao {
                     System.out.print(">>> Nome: ");
                     String nome = scanner.nextLine();
                     Corrida c = new Corrida(nome);
+
+                    exibirSeparador();
                     System.out.print("Digite a data (dd/MM/yyyy) ou ENTER para hoje:\n>>> ");
                     String dataStr = scanner.nextLine();
-                    if (!dataStr.isBlank()) c.setData(LocalDate.parse(dataStr, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                    LocalDate data = validarData(c, dataStr);
+                    c.setData(data);
+
+                    exibirSeparador();
                     System.out.print("Digite distância (m):\n>>> ");
                     c.setDistancia(Integer.parseInt(scanner.nextLine()));
+
+                    exibirSeparador();
                     System.out.print("Digite tempo (min):\n>>> ");
                     c.setTempo(Integer.parseInt(scanner.nextLine()));
+
+                    exibirSeparador();
                     System.out.print("Digite dificuldade (1 a 10):\n>>> ");
                     c.setDificuldade(Integer.parseInt(scanner.nextLine()));
                     lista.adicionarCorrida(c);
+
+                    exibirSeparador();
                     System.out.println("Corrida cadastrada com sucesso!");
                     break;
                 case 2:
@@ -129,6 +140,11 @@ public class Aplicacao {
         } while (opcao != 0);
 
         scanner.close();
+    }
+
+    public static LocalDate validarData(Corrida corrida,String data) {
+        if (data.isBlank()) return LocalDate.now();
+        else return LocalDate.parse(data, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
 
     public static void exibirLogo() {
