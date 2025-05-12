@@ -12,7 +12,7 @@ public class Aplicacao {
 
         do {
             System.out.println("\n╔══════════════════════════════════╗");
-            System.out.println("║     CONTROLE DE CORRIDAS 🏃     ║");
+            System.out.println("║     CONTROLE DE CORRIDAS 🏃      ║");
             System.out.println("╠══════════════════════════════════╣");
             System.out.println("║ 1) Cadastrar nova corrida        ║");
             System.out.println("║ 2) Listar corridas por data      ║");
@@ -46,7 +46,7 @@ public class Aplicacao {
                     exibirSeparador();
                     System.out.print("Digite a data (dd/MM/yyyy) ou ENTER para hoje:\n>>> ");
                     String dataStr = scanner.nextLine();
-                    LocalDate data = validarData(c, dataStr);
+                    LocalDate data = validarData(dataStr);
                     c.setData(data);
 
                     exibirSeparador();
@@ -132,6 +132,9 @@ public class Aplicacao {
                     exibirSeparador();
                     System.out.println("🔸 Encerrando o programa...");
                     break;
+                /*case 101:
+                    Corrida.popularCorridas();
+                    break;*/
                 default:
                     System.out.println();
                     System.out.println("🔸 Opção inválida. Tente novamente.");
@@ -142,7 +145,7 @@ public class Aplicacao {
         scanner.close();
     }
 
-    public static LocalDate validarData(Corrida corrida,String data) {
+    public static LocalDate validarData(String data) {
         if (data.isBlank()) return LocalDate.now();
         else return LocalDate.parse(data, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
