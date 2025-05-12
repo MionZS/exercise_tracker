@@ -21,6 +21,7 @@ public class Aplicacao {
             System.out.println("║ 5) Listar por dificuldade        ║");
             System.out.println("║ 6) Resumo de desempenho          ║");
             System.out.println("║ 7) Excluir corrida existente     ║");
+            System.out.println("║ 7) Excluir corrida existente     ║");
             System.out.println("║ 8) Modificar corrida existente   ║");
             System.out.println("║ 0) Sair                          ║");
             System.out.println("╚══════════════════════════════════╝");

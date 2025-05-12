@@ -1,26 +1,18 @@
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class Corrida implements Comparable<Corrida>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private LocalDate data;
     private String nome;
-    private int distancia; // em metros
-    private int tempo; // em minutos
+    private LocalDate data;
+    private int distancia;   // em metros
+    private int tempo;       // em minutos
     private int dificuldade; // escala de esforço de 1 a 10
 
-    // Construtor completo
-    public Corrida(String nome, LocalDate data, int distancia, int tempo, int dificuldade) {
-        this.nome = nome;
-        this.data = data;
-        this.distancia = distancia;
-        this.tempo = tempo;
-        this.dificuldade = dificuldade;
-    }
-
-    // Construtor apenas com nome
+    // Construtor mínimo: apenas nome
     public Corrida(String nome) {
         this.nome = nome;
         this.data = null;
@@ -30,66 +22,81 @@ public class Corrida implements Comparable<Corrida>, Serializable {
     }
 
     // Getters e Setters
-    public LocalDate getData() {
-        return data;
-    }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
 
-    public void setData(LocalDate data) {
-        this.data = data;
-    }
+    public LocalDate getData() { return data; }
+    public void setData(LocalDate data) { this.data = data; }
 
-    public String getNome() {
-        return nome;
-    }
+    public int getDistancia() { return distancia; }
+    public void setDistancia(int distancia) { this.distancia = distancia; }
 
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
+    public int getTempo() { return tempo; }
+    public void setTempo(int tempo) { this.tempo = tempo; }
 
-    public int getDistancia() {
-        return distancia;
-    }
+    public int getDificuldade() { return dificuldade; }
+    public void setDificuldade(int dificuldade) { this.dificuldade = dificuldade; }
 
-    public void setDistancia(int distancia) {
-        this.distancia = distancia;
-    }
-
-    public int getTempo() {
-        return tempo;
-    }
-
-    public void setTempo(int tempo) {
-        this.tempo = tempo;
-    }
-
-    public int getDificuldade() {
-        return dificuldade;
-    }
-
-    public void setDificuldade(int dificuldade) {
-        this.dificuldade = dificuldade;
-    }
-
-    // Implementação de Comparable para ordenar por data
+    // Ordenação natural por data (mais antigas primeiro), tratando null
     @Override
     public int compareTo(Corrida outra) {
         if (this.data == null && outra.data == null) return 0;
-        if (this.data == null) return 1; // ou -1 se quiser datas nulas primeiro
+        if (this.data == null) return 1;
         if (outra.data == null) return -1;
         return this.data.compareTo(outra.data);
     }
 
-
-    // Método toString
+    // Representação em string para exibição
     @Override
     public String toString() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        String dataStr = (data != null) ? data.format(formatter) : "Data não informada";
-        String distanciaStr = (distancia > 0) ? String.format("%d.%03dm", distancia / 1000, distancia % 1000) : "Distância não informada";
-        String tempoStr = (tempo > 0) ? tempo + " minutos" : "Tempo não informado";
-        String dificuldadeStr = (dificuldade > 0) ? "Dificuldade: " + dificuldade + "/10" : "Dificuldade não informada";
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String dataStr = (data != null) ? data.format(fmt) : "--/--/----";
+        return String.format("%s - %s - %dm - %dmin - dif %d",
+                dataStr, nome, distancia, tempo, dificuldade);
+    }
 
-        return String.format("%s - %s - %s - %s - %s",
-                dataStr, nome, distanciaStr, tempoStr, dificuldadeStr);
+    /**
+     * Atualiza um campo específico com base na opção fornecida.
+     * @param campo número da opção (1=nome, 2=data, 3=distancia, 4=tempo, 5=dificuldade)
+     * @param valor string contendo o novo valor (o menu deve validar/converter conforme necessário)
+     */
+    public void modificar(int campo, String valor) {
+        switch (campo) {
+            case 1:
+                setNome(valor);
+                break;
+            case 2:
+                try {
+                    DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    setData(LocalDate.parse(valor, fmt));
+                } catch (DateTimeParseException e) {
+                    // valor inválido, manter data
+                }
+                break;
+            case 3:
+                try {
+                    setDistancia(Integer.parseInt(valor));
+                } catch (NumberFormatException e) {
+                    // inválido, manter distância
+                }
+                break;
+            case 4:
+                try {
+                    setTempo(Integer.parseInt(valor));
+                } catch (NumberFormatException e) {
+                    // inválido, manter tempo
+                }
+                break;
+            case 5:
+                try {
+                    setDificuldade(Integer.parseInt(valor));
+                } catch (NumberFormatException e) {
+                    // inválido, manter dificuldade
+                }
+                break;
+            default:
+                // opção inexistente
+                break;
+        }
     }
 }
