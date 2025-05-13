@@ -55,11 +55,6 @@ public class Corrida implements Comparable<Corrida>, Serializable {
                 dataStr, nome, distancia, tempo, dificuldade);
     }
 
-    /**
-     * Atualiza um campo específico com base na opção fornecida.
-     * @param campo número da opção (1=nome, 2=data, 3=distancia, 4=tempo, 5=dificuldade)
-     * @param valor string contendo o novo valor (o menu deve validar/converter conforme necessário)
-     */
     public void modificar(int campo, String valor) {
         switch (campo) {
             case 1:
@@ -99,34 +94,4 @@ public class Corrida implements Comparable<Corrida>, Serializable {
                 break;
         }
     }
-    public static void popularCorridas() {
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-        Corrida c1 = new Corrida("matatona ufpr 100 anos");
-        c1.setData(LocalDate.now()); // Data não fornecida = hoje
-        c1.setDistancia(10000);
-        c1.setTempo(50);
-        c1.setDificuldade(10);
-
-        Corrida c2 = new Corrida("nduia[a");
-        c2.setData(LocalDate.parse("24/09/2001", fmt));
-        c2.setDistancia(1500);
-        c2.setTempo(5);
-        c2.setDificuldade(3);
-
-        Corrida c3 = new Corrida("sono");
-        c3.setData(LocalDate.parse("10/05/2025", fmt));
-        c3.setDistancia(1200);
-        c3.setTempo(2);
-        c3.setDificuldade(2);
-
-        Corrida c4 = new Corrida("maratona contra saudade");
-        c4.setData(LocalDate.parse("08/04/2025", fmt));
-        c4.setDistancia(5000);
-        c4.setTempo(40);
-        c4.setDificuldade(10);
-
-        System.out.println("✅ Corridas cadastradas automaticamente com base na entrada do usuário!");
-    }
-
 }

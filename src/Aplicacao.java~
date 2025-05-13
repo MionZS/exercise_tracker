@@ -3,9 +3,11 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class Aplicacao {
+    public final static Scanner scanner = new Scanner(System.in);
+    public final static ListaCorridas lista = new ListaCorridas("Minhas Corridas");
+    private static final DateTimeFormatter DATA_FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        ListaCorridas lista = new ListaCorridas("Minhas Corridas");
         int opcao;
 
         exibirLogo();
@@ -133,7 +135,9 @@ public class Aplicacao {
                     System.out.println("🔸 Encerrando o programa...");
                     break;
                 case 101:
-                    Corrida.popularCorridas();
+                    exibirSeparador();
+                    System.out.println("🔹 Populando corridas de teste...");
+                    popularCorridas(lista);
                     break;
                 default:
                     System.out.println();
@@ -148,6 +152,85 @@ public class Aplicacao {
     public static LocalDate validarData(String data) {
         if (data.isBlank()) return LocalDate.now();
         else return LocalDate.parse(data, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+    }
+
+    /**
+     * Lê uma linha de texto do usuário, exibindo um prompt.
+     */
+    private static String lerString(String prompt) {
+        System.out.println(prompt);
+        return scanner.nextLine().trim();
+    }
+
+    /**
+     * Lê um inteiro dentro de um intervalo [min, max], repetindo em caso de erro.
+     */
+    private static int lerInteiro(String prompt, int min, int max) {
+        while (true) {
+            System.out.println(prompt);
+            String s = scanner.nextLine().trim();
+            try {
+                int v = Integer.parseInt(s);
+                if (v < min || v > max) throw new NumberFormatException();
+                return v;
+            } catch (NumberFormatException e) {
+                System.out.println("Entrada inválida. Insira um número entre " + min + " e " + max + ".");
+            }
+        }
+    }
+
+    /**
+     * Lê uma data no formato dd/MM/yyyy ou retorna hoje se vazio, repetindo em caso de erro.
+     */
+    private static LocalDate lerData(String prompt) {
+        while (true) {
+            System.out.println(prompt);
+            String s = scanner.nextLine().trim();
+            if (s.isEmpty()) return LocalDate.now();
+            try {
+                return LocalDate.parse(s, DATA_FMT);
+            } catch (DateTimeParseException e) {
+                System.out.println("Data inválida. Use o formato dd/MM/yyyy.");
+            }
+        }
+    }
+
+    /**
+     * Popular a lista com dados de exemplo para testes.
+     */
+    public static void popularCorridas(ListaCorridas lista) {
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        Corrida c1 = new Corrida("Maratona UFPR 100 anos");
+        c1.setData(LocalDate.now());
+        c1.setDistancia(10000);
+        c1.setTempo(50);
+        c1.setDificuldade(10);
+
+        Corrida c2 = new Corrida("nduia[a");
+        c2.setData(LocalDate.parse("24/09/2001", fmt));
+        c2.setDistancia(1500);
+        c2.setTempo(5);
+        c2.setDificuldade(3);
+
+        Corrida c3 = new Corrida("sono");
+        c3.setData(LocalDate.parse("10/05/2025", fmt));
+        c3.setDistancia(1200);
+        c3.setTempo(2);
+        c3.setDificuldade(2);
+
+        Corrida c4 = new Corrida("maratona contra saudade");
+        c4.setData(LocalDate.parse("08/04/2025", fmt));
+        c4.setDistancia(5000);
+        c4.setTempo(40);
+        c4.setDificuldade(10);
+
+        lista.adicionarCorrida(c1);
+        lista.adicionarCorrida(c2);
+        lista.adicionarCorrida(c3);
+        lista.adicionarCorrida(c4);
+
+        System.out.println("✅ Corridas cadastradas automaticamente com base na lista fornecida!");
     }
 
     public static void exibirLogo() {
