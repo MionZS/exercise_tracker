@@ -1,0 +1,280 @@
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Scanner;
+
+public class Main {
+    public final static Scanner scanner = new Scanner(System.in);
+    public final static ListaCorridas lista = new ListaCorridas("Minhas Corridas");
+    private static final DateTimeFormatter DATA_FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+    public static void main(String[] args) {
+        int opcao;
+
+        exibirLogo();
+
+        do {
+            exibirMenu();
+            System.out.println("🔹 Escolha uma opção:");
+            System.out.print(">>> ");
+            opcao = menuInteracao();
+            ListaCorridas como = new ListaCorridas("ordenada");
+
+            switch (opcao) {
+                case 1:
+                    Corrida c = cadastrarCorrida(); // Cadastra uma corrida criando uma instância da classe Corrida e então interage com o usuário pra colocar informações sobre a corrida
+                    lista.adicionarCorrida(c); // Adiciona a corrida na lista
+                    exibirSeparador();
+                    System.out.println("Corrida cadastrada com sucesso!");
+                    break;
+                case 2:
+                    exibirSeparador();
+                    System.out.println("🔹 Lista de corridas por data:");
+                    for (Corrida rc : lista.listarPorData()) System.out.println(rc);
+                    break;
+                case 3:
+                    exibirSeparador();
+                    System.out.print("🔹 Buscar corrida por nome:\n>>> ");
+                    String termo = scanner.nextLine();
+                    for (Corrida rc : lista.buscarPorNome(termo)) System.out.println(rc);
+                    break;
+                case 4:
+                    exibirSeparador();
+                    System.out.println("🔹 Lista de corridas por distância:");
+                    for (Corrida rc : lista.listarPorDistanciaENome()) System.out.println(rc);
+                    break;
+                case 5:
+                    exibirSeparador();
+                    System.out.println("🔹 Lista de corridas por dificuldade:");
+                    for (Corrida rc : lista.listarPorDificuldade()) System.out.println(rc);
+                    break;
+                case 6:
+                    exibirSeparador();
+                    System.out.println("🔹 Resumo de desempenho:");
+                    System.out.println("Número de corridas: " + lista.getNumeroCorridas());
+                    System.out.println("Distância total: " + lista.getDistanciaTotal() + "m");
+                    System.out.println("Tempo total: " + lista.getTempoTotal() + "min");
+                    System.out.printf("Tempo médio: %.2fmin\n", lista.getTempoMedio());
+                    break;
+                case 7:
+                    exibirSeparador();
+                    System.out.print("🔹 Excluir corrida existente:\n>>> Parte do nome: ");
+                    String del = scanner.nextLine();
+                    boolean removed = lista.removerPorTrechoNome(del);
+                    System.out.println(removed ? "Corrida excluída." : "Nenhuma corrida única encontrada.");
+                    break;
+                case 8:
+                    exibirSeparador();
+                    System.out.println("🔹 Modificar corrida existente:");
+                    if (lista.getNumeroCorridas() == 0) {
+                        System.out.println("Nenhuma corrida cadastrada.");
+                        break;
+                    }
+                    // listar com índice
+                    for (int i = 0; i < lista.getNumeroCorridas(); i++) {
+                        System.out.println(i + ": " + lista.listarPorData().get(i));
+                    }
+                    System.out.print(">>> Índice da corrida: ");
+                    int idx = Integer.parseInt(scanner.nextLine());
+                    if (idx < 0 || idx >= lista.getNumeroCorridas()) {
+                        System.out.println("Índice inválido.");
+                        break;
+                    }
+                    Corrida sel = lista.listarPorData().get(idx);
+                    // submenu campo
+                    submenuModificarCorrida();
+                    modificarCorrida(sel);
+                    System.out.println("Corrida modificada com sucesso.");
+                    break;
+                case 0:
+                    exibirSeparador();
+                    System.out.println("🔸 Encerrando o programa...");
+                    break;
+                case 101:
+                    exibirSeparador();
+                    System.out.println("🔹 Populando corridas de teste...");
+                    popularCorridas(lista);
+                    break;
+                default:
+                    System.out.println();
+                    System.out.println("🔸 Opção inválida. Tente novamente.");
+                    System.out.println();
+            }
+        } while (opcao != 0);
+
+        scanner.close();
+    }
+
+    public static LocalDate validarData(String data) {
+        if (data.isBlank()) return LocalDate.now();
+        else return LocalDate.parse(data, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+    }
+
+    /**
+     * Lê uma linha de texto do usuário, exibindo um prompt.
+     */
+    private static String validarString(String prompt) {
+        System.out.println(prompt);
+        return scanner.nextLine().trim();
+    }
+
+    /**
+     * Lê um inteiro dentro de um intervalo [min, max], repetindo em caso de erro.
+     */
+    private static int lerInteiro(String prompt, int min, int max) {
+        while (true) {
+            System.out.println(prompt);
+            String s = scanner.nextLine().trim();
+            try {
+                int v = Integer.parseInt(s);
+                if (v < min || v > max) throw new NumberFormatException();
+                return v;
+            } catch (NumberFormatException e) {
+                System.out.println("Entrada inválida. Insira um número entre " + min + " e " + max + ".");
+            }
+        }
+    }
+
+    /**
+     * Lê uma data no formato dd/MM/yyyy ou retorna hoje se vazio, repetindo em caso de erro.
+     */
+    private static LocalDate lerData(String prompt) {
+        while (true) {
+            System.out.println(prompt);
+            String s = scanner.nextLine().trim();
+            if (s.isEmpty()) return LocalDate.now();
+            try {
+                return LocalDate.parse(s, DATA_FMT);
+            } catch (DateTimeParseException e) {
+                System.out.println("Data inválida. Use o formato dd/MM/yyyy.");
+            }
+        }
+    }
+
+    /**
+     * Popular a lista com dados de exemplo para testes.
+     */
+    public static void popularCorridas(ListaCorridas lista) {
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        Corrida c1 = new Corrida("Maratona UFPR 100 anos");
+        c1.setData(LocalDate.now());
+        c1.setDistancia(10000);
+        c1.setTempo(50);
+        c1.setDificuldade(10);
+
+        Corrida c2 = new Corrida("nduia[a");
+        c2.setData(LocalDate.parse("24/09/2001", fmt));
+        c2.setDistancia(1500);
+        c2.setTempo(5);
+        c2.setDificuldade(3);
+
+        Corrida c3 = new Corrida("sono");
+        c3.setData(LocalDate.parse("10/05/2025", fmt));
+        c3.setDistancia(1200);
+        c3.setTempo(2);
+        c3.setDificuldade(2);
+
+        Corrida c4 = new Corrida("maratona contra saudade");
+        c4.setData(LocalDate.parse("08/04/2025", fmt));
+        c4.setDistancia(5000);
+        c4.setTempo(40);
+        c4.setDificuldade(10);
+
+        lista.adicionarCorrida(c1);
+        lista.adicionarCorrida(c2);
+        lista.adicionarCorrida(c3);
+        lista.adicionarCorrida(c4);
+
+        System.out.println("✅ Corridas cadastradas automaticamente com base na lista fornecida!");
+    }
+
+    public static Corrida cadastrarCorrida() {
+        exibirSeparador();
+        System.out.println("🔹 Cadastrar nova corrida:");
+        System.out.print(">>> Nome: ");
+        String nome = scanner.nextLine();
+        Corrida c = new Corrida(nome);
+
+        exibirSeparador();
+        System.out.print("Digite a data (dd/MM/yyyy) ou ENTER para hoje:\n>>> ");
+        String dataStr = scanner.nextLine();
+        LocalDate data = validarData(dataStr);
+        c.setData(data);
+
+        exibirSeparador();
+        System.out.print("Digite distância (m):\n>>> ");
+        c.setDistancia(Integer.parseInt(scanner.nextLine()));
+
+        exibirSeparador();
+        System.out.print("Digite tempo (min):\n>>> ");
+        c.setTempo(Integer.parseInt(scanner.nextLine()));
+
+        exibirSeparador();
+        System.out.print("Digite dificuldade (1 a 10):\n>>> ");
+        c.setDificuldade(Integer.parseInt(scanner.nextLine()));
+
+        return c;
+    }
+    public static void modificarCorrida(Corrida sel)  {
+        int campo = Integer.parseInt(scanner.nextLine());
+        System.out.print("Digite o novo valor:\n>>> ");
+        String valor = scanner.nextLine();
+        sel.modificar(campo, valor);
+    }
+
+    public static void exibirLista(ListaCorridas as) { for (Corrida rc : as) System.out.println(rc); }
+
+    public static int menuInteracao() {
+        int opcao;
+        String entrada = scanner.nextLine();
+        try {
+            opcao = Integer.parseInt(entrada);
+        } catch (NumberFormatException e) {
+            opcao = -1;
+        }
+        return opcao;
+    }
+    public static void exibirLogo() {
+        System.out.println("           _________ _______  _______  _______  _        _______  _______ ");
+        System.out.println("|\\     /|  \\__   __/(  ____ )(  ___  )(  ____ \\| \\    /\\(  ____ \\(  ____ )");
+        System.out.println("( \\   / )     ) (   | (    )|| (   ) || (    \\/|  \\  / /| (    \\/| (    )|");
+        System.out.println(" \\ (_) /      | |   | (____)|| (___) || |      |  (_/ / | (__    | (____)|");
+        System.out.println("  ) _ (       | |   |     __)|  ___  || |      |   _ (  |  __)   |     __)");
+        System.out.println(" / ( ) \\      | |   | (\\ (   | (   ) || |      |  ( \\ \\ | (      | (\\ (   ");
+        System.out.println("( /   \\ )     | |   | ) \\ \\__| )   ( || (____/\\|  /  \\ \\| (____/\\| ) \\ \\__");
+        System.out.println("|/     \\|     )_(   |/   \\__/|/     \\|(_______/|_/    \\/(_______/|/   \\__/");
+    }
+    public static void exibirMenu() {
+        System.out.println("\n╔══════════════════════════════════╗");
+        System.out.println("║     CONTROLE DE CORRIDAS 🏃      ║");
+        System.out.println("╠══════════════════════════════════╣");
+        System.out.println("║ 1) Cadastrar nova corrida        ║");
+        System.out.println("║ 2) Listar corridas por data      ║");
+        System.out.println("║ 3) Buscar corrida por nome       ║");
+        System.out.println("║ 4) Listar por distância          ║");
+        System.out.println("║ 5) Listar por dificuldade        ║");
+        System.out.println("║ 6) Resumo de desempenho          ║");
+        System.out.println("║ 7) Excluir corrida existente     ║");
+        System.out.println("║ 8) Modificar corrida existente   ║");
+        System.out.println("║ 0) Sair                          ║");
+        System.out.println("╚══════════════════════════════════╝");
+        System.out.println();
+    }
+    public static void submenuModificarCorrida() {
+        System.out.println("\n╔══════════════════════════════════╗");
+        System.out.println("║      MODIFICAR CORRIDA 🏃        ║");
+        System.out.println("╠══════════════════════════════════╣");
+        System.out.println("║ 1) Modificar nome                ║");
+        System.out.println("║ 2) Modificar data                ║");
+        System.out.println("║ 3) Modificar distância           ║");
+        System.out.println("║ 4) Modificar tempo               ║");
+        System.out.println("║ 5) Modificar dificuldade         ║");
+        System.out.println("╚══════════════════════════════════╝");
+        System.out.println();
+        System.out.print(">>> Campo: ");
+    }
+    public static void exibirSeparador() {
+        System.out.println("-..- - .-. .- -.-. -.- . .-.-..- - .-. .- -.-. -.- . .-.");
+    }
+}

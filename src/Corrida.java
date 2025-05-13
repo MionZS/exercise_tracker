@@ -15,10 +15,6 @@ public class Corrida implements Comparable<Corrida>, Serializable {
     // Construtor mínimo: apenas nome
     public Corrida(String nome) {
         this.nome = nome;
-        this.data = null;
-        this.distancia = 0;
-        this.tempo = 0;
-        this.dificuldade = 0;
     }
 
     // Getters e Setters
