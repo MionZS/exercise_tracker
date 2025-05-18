@@ -52,6 +52,19 @@ public class ListaCorridas implements Iterable<Corrida> {
                 .collect(Collectors.toList());
     }
 
+    public List<Corrida> listarPorData() {
+        return corridas.stream()
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
+    public List<Corrida> listarPorDistanciaENome() {
+        return corridas.stream()
+                .sorted(Comparator.comparingInt(Corrida::getDistancia).reversed()
+                        .thenComparing(Corrida::getNome))
+                .collect(Collectors.toList());
+    }
+
     public List<Corrida> buscarPorNome(String trecho) {
         String termo = trecho.toLowerCase();
         List<Corrida> resultado = new ArrayList<>();
@@ -95,19 +108,6 @@ public class ListaCorridas implements Iterable<Corrida> {
     public double getTempoMedio() {
         if (corridas.isEmpty()) return 0;
         return (double) getTempoTotal() / corridas.size();
-    }
-
-    public List<Corrida> listarPorData() {
-        return corridas.stream()
-                .sorted()
-                .collect(Collectors.toList());
-    }
-
-    public List<Corrida> listarPorDistanciaENome() {
-        return corridas.stream()
-                .sorted(Comparator.comparingInt(Corrida::getDistancia).reversed()
-                        .thenComparing(Corrida::getNome))
-                .collect(Collectors.toList());
     }
 
     @Override
