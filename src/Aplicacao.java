@@ -1,4 +1,3 @@
-//import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -56,8 +55,12 @@ public class Aplicacao {
                     exibirSeparador();
                     System.out.print("🔹 Excluir corrida existente:\n>>> Parte do nome: ");
                     String del = scanner.nextLine();
-                    boolean removed = lista.removerPorTrechoNome(del);
-                    System.out.println(removed ? "Corrida excluída." : "Nenhuma corrida única encontrada.");
+                    System.out.print(">>> Confirma exclusão? (Enter para sim, qualquer outra coisa para não): ");
+                    if (scanner.nextLine().equals("")) {
+                        boolean removed = lista.removerPorTrechoNome(del);
+                        System.out.println(removed ? "Corrida excluída." : "Nenhuma corrida única encontrada.");
+                    }
+                    else System.out.println("Exclusão cancelada.");
                     break;
                 case 8:
                     exibirSeparador();
@@ -119,16 +122,7 @@ public class Aplicacao {
         }
     }
 
-
-    /*
-     * Lê uma linha de texto do usuário, exibindo um prompt.
-
-    private static String validarString(String prompt) {
-        System.out.println(prompt);
-        return scanner.nextLine().trim();
-    }
-
-    /*
+    /**
      * Lê um inteiro dentro de um intervalo [min, max], repetindo em caso de erro.
     */
     private static int lerInteiro() {
@@ -144,22 +138,6 @@ public class Aplicacao {
             }
         }
     }
-
-    /*
-     * Lê uma data no formato dd/MM/yyyy ou retorna hoje se vazio, repetindo em caso de erro.
-
-    private static LocalDate lerData(String prompt) {
-        while (true) {
-            System.out.println(prompt);
-            String s = scanner.nextLine().trim();
-            if (s.isEmpty()) return LocalDate.now();
-            try {
-                return LocalDate.parse(s, DATA_FMT);
-            } catch (DateTimeParseException e) {
-                System.out.println("Data inválida. Use o formato dd/MM/yyyy.");
-            }
-        }
-    } */
 
     /**
      * Popular a lista com dados de exemplo para testes.
